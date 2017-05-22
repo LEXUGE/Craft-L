@@ -183,94 +183,106 @@ int get_stuff(int code)
   int i=0,flag=0;
   if (code==1)
   {
-    if ((position.y-1>=min_width)&&(map[position.x][position.y-1]>=item[1].num)&&(item[map[position.x][position.y-1]-item[1].num+1].get==1))
+    if (map[position.x][position.y-1]>=item[1].num)
     {
-      for (i=1;i<=stuff_node[0];i++)
+      if ((position.y-1>=min_width)&&(item[map[position.x][position.y-1]-item[1].num+1].get==1))
       {
-        if (item[stuff_node[i]].num==map[position.x][position.y-1])
+        for (i=1;i<=stuff_node[0];i++)
         {
-          flag=1;
-          stuff[item[stuff_node[i]].num]++;
+          if (item[stuff_node[i]].num==map[position.x][position.y-1])
+          {
+            flag=1;
+            stuff[item[stuff_node[i]].num]++;
+          }
         }
+        if (flag==0)
+        {
+          stuff_node[0]++;
+          stuff_node[stuff_node[0]]=map[position.x][position.y-1]-item[1].num+1;
+          stuff[map[position.x][position.y-1]]++;
+        }
+        map[position.x][position.y-1]=0;
       }
-      if (flag==0)
-      {
-        stuff_node[0]++;
-        stuff_node[stuff_node[0]]=map[position.x][position.y-1]-item[1].num+1;
-        stuff[map[position.x][position.y-1]]++;
-      }
-      map[position.x][position.y-1]=0;
+      i=0;
     }
-    i=0;
   }
 
   if (code==2)
   {
-    if ((position.y+1<=max_width)&&(map[position.x][position.y+1]>=item[1].num)&&(item[map[position.x][position.y+1]-item[1].num+1].get==1))
+    if (map[position.x][position.y+1]>=item[1].num)
     {
-      for (i=1;i<=stuff_node[0];i++)
+      if ((position.y+1<=max_width)&&(item[map[position.x][position.y+1]-item[1].num+1].get==1))
       {
-        if (item[stuff_node[i]].num==map[position.x][position.y+1])
+        for (i=1;i<=stuff_node[0];i++)
         {
-          flag=1;
-          stuff[item[stuff_node[i]].num]++;
+          if (item[stuff_node[i]].num==map[position.x][position.y+1])
+          {
+            flag=1;
+            stuff[item[stuff_node[i]].num]++;
+          }
         }
+        if (flag==0)
+        {
+          stuff_node[0]++;
+          stuff_node[stuff_node[0]]=map[position.x][position.y+1]-item[1].num+1;
+          stuff[map[position.x][position.y+1]]++;
+        }
+        map[position.x][position.y+1]=0;
       }
-      if (flag==0)
-      {
-        stuff_node[0]++;
-        stuff_node[stuff_node[0]]=map[position.x][position.y+1]-item[1].num+1;
-        stuff[map[position.x][position.y+1]]++;
-      }
-      map[position.x][position.y+1]=0;
+      i=0;
     }
-    i=0;
   }
 
   if (code==3)
   {
-    if ((position.x-1>=min_height)&&(map[position.x-1][position.y]>=item[1].num)&&(item[map[position.x-1][position.y]-item[1].num+1].get==1))
+    if (map[position.x-1][position.y]>=item[1].num)
     {
-      for (i=1;i<=stuff_node[0];i++)
+      if ((position.x-1>=min_height)&&(item[map[position.x-1][position.y]-item[1].num+1].get==1))
       {
-        if (item[stuff_node[i]].num==map[position.x-1][position.y])
+        for (i=1;i<=stuff_node[0];i++)
         {
-          flag=1;
-          stuff[item[stuff_node[i]].num]++;
+          if (item[stuff_node[i]].num==map[position.x-1][position.y])
+          {
+            flag=1;
+            stuff[item[stuff_node[i]].num]++;
+          }
         }
+        if (flag==0)
+        {
+          stuff_node[0]++;
+          stuff_node[stuff_node[0]]=map[position.x-1][position.y]-item[1].num+1;
+          stuff[map[position.x-1][position.y]]++;
+        }
+        map[position.x-1][position.y]=0;
       }
-      if (flag==0)
-      {
-        stuff_node[0]++;
-        stuff_node[stuff_node[0]]=map[position.x-1][position.y]-item[1].num+1;
-        stuff[map[position.x-1][position.y]]++;
-      }
-      map[position.x-1][position.y]=0;
+      i=0;
     }
-    i=0;
   }
 
   if (code==4)
   {
-    if ((position.x+1<=max_height)&&(map[position.x+1][position.y]>=item[1].num)&&(item[map[position.x+1][position.y]-item[1].num+1].get==1))
+    if (map[position.x+1][position.y]>=item[1].num)
     {
-      for (i=1;i<=stuff_node[0];i++)
+      if ((position.x+1<=max_height)&&(item[map[position.x+1][position.y]-item[1].num+1].get==1))
       {
-        if (item[stuff_node[i]].num==map[position.x+1][position.y])
+        for (i=1;i<=stuff_node[0];i++)
         {
-          flag=1;
-          stuff[item[stuff_node[i]].num]++;
+          if (item[stuff_node[i]].num==map[position.x+1][position.y])
+          {
+            flag=1;
+            stuff[item[stuff_node[i]].num]++;
+          }
         }
+        if (flag==0)
+        {
+          stuff_node[0]++;
+          stuff_node[stuff_node[0]]=map[position.x+1][position.y]-item[1].num+1;
+          stuff[map[position.x+1][position.y]]++;
+        }
+        map[position.x+1][position.y]=0;
       }
-      if (flag==0)
-      {
-        stuff_node[0]++;
-        stuff_node[stuff_node[0]]=map[position.x+1][position.y]-item[1].num+1;
-        stuff[map[position.x+1][position.y]]++;
-      }
-      map[position.x+1][position.y]=0;
+      i=0;
     }
-    i=0;
   }
   return 0;
 }
@@ -288,7 +300,7 @@ int item_init()
   item[1].get=1;//can
 
   item[2].num=8;
-  item[2].chance=15;
+  item[2].chance=30;
   item[2].fluc=3;
   item[2].symbol="'";
   item[2].front_color=COLOR_WHITE;
@@ -301,26 +313,44 @@ int item_init()
 
 int random_stuff(int num,int chance,int fluc,int liquid)
 {
-  int i=0,ran_x=0,ran_y=0;
+  int i=0,ran_x=0,ran_y=0,flag=0;
+  flag=0;
   if (liquid==0)
   {
     for (i=1;i<=(chance+(abs(GetRandom())%fluc));i++)
     {
-      ran_x=0;ran_y=0;
-      ran_x=abs(GetRandom())%max_height+1;
-      ran_y=abs(GetRandom())%max_width+1;
-      map[ran_x][ran_y]=num;
+      flag=0;
+      while (flag==0)
+      {
+        ran_x=0;ran_y=0;
+        ran_x=abs(GetRandom())%max_height+1;
+        ran_y=abs(GetRandom())%max_width+1;
+        if ((ran_x!=position.x)&&(ran_y!=position.y))
+        {
+          flag=1;
+          map[ran_x][ran_y]=num;
+        }
+      }
     }
   }
+  flag=0;
   if (liquid==1)
   {
     for (i=1;i<=(chance+(abs(GetRandom())%fluc));i++)
     {
-      ran_x=0;ran_y=0;
-      ran_x=abs(GetRandom())%max_height+1;
-      ran_y=abs(GetRandom())%max_width+1;
-      map[ran_x][ran_y]=num;
-      liquid_dfs(ran_x,ran_y,num,1,25);
+      flag=0;
+      while (flag==0)
+      {
+        ran_x=0;ran_y=0;
+        ran_x=abs(GetRandom())%max_height+1;
+        ran_y=abs(GetRandom())%max_width+1;
+        if ((ran_x!=position.x)&&(ran_y!=position.y))
+        {
+          flag=1;
+          map[ran_x][ran_y]=num;
+          liquid_dfs(ran_x,ran_y,num,1,25);
+        }
+      }
     }
   }
   return 0;
@@ -365,11 +395,11 @@ int display()
   init_pair(1,COLOR_BLACK,COLOR_WHITE);
   attron(COLOR_PAIR(1));
 
-  printw(" Craft-L|X:%d Y:%d row:%d col:%d",position.x,position.y,row,col);refresh();
+  printw("X:%d Y:%d row:%d col:%d",position.x,position.y,row,col);refresh();
   if (stuff_now>0)
-    printw("   Now:%s",item[stuff_node[stuff_now]].symbol);
-  else printw("   Now: Hand");
-  printw("   Stuff(%d):",stuff_node[0]);
+    printw(" N:%s",item[stuff_node[stuff_now]].symbol);
+  else printw(" N:Hand");
+  printw(" S(%d):",stuff_node[0]);
   if (stuff_node[0]<max_stuff_vis)
   {
     for (i=1;i<=stuff_node[0];i++)
@@ -538,16 +568,16 @@ int init_digital()
   item_init();
   position.x=(abs(GetRandom())%900+1);
   position.y=(abs(GetRandom())%900+1);
-  //position.x=1;
-  //position.y=1;
+  //position.x=24;
+  //position.y=80;
   pos_old=map[position.x][position.y];
   get_row_col();
   if ((position.x%(row-1))!=0)
     dstart_x=(abs(GetRandom())%(position.x%(row-1))+(position.x-(position.x%(row-1))))+1;
-  else dstart_x=1;
+  else dstart_x=position.x;
   if ((position.y%col)!=0)
     dstart_y=(abs(GetRandom())%(position.y%col)+(position.y-(position.y%col)))+1;
-  else dstart_y=1;
+  else dstart_y=position.y;
 
   map[position.x][position.y]=1;
   for (i=1;i<=item_n;i++)
