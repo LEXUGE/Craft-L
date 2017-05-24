@@ -47,6 +47,7 @@ int row=0;
 int col=0;
 int stuff[101]={0};
 int stuff_node[101]={0};
+int max_stuff_node=100;
 int max_stuff_vis=3;
 int max_r_fluc=10;
 int pos_old=0;
@@ -195,15 +196,16 @@ int get_stuff(int code)
             {
               flag=1;
               stuff[item[stuff_node[i]].num]++;
+              map[position.x][position.y-1]=0;
             }
           }
-          if (flag==0)
+          if ((flag==0)&&(stuff_node[0]+1<=max_stuff_node))
           {
             stuff_node[0]++;
             stuff_node[stuff_node[0]]=map[position.x][position.y-1]-item[1].num+1;
             stuff[map[position.x][position.y-1]]++;
+            map[position.x][position.y-1]=0;
           }
-          map[position.x][position.y-1]=0;
         }
         i=0;
       }
@@ -224,15 +226,16 @@ int get_stuff(int code)
             {
               flag=1;
               stuff[item[stuff_node[i]].num]++;
+              map[position.x][position.y+1]=0;
             }
           }
-          if (flag==0)
+          if ((flag==0)&&(stuff_node[0]+1<=max_stuff_node))
           {
             stuff_node[0]++;
             stuff_node[stuff_node[0]]=map[position.x][position.y+1]-item[1].num+1;
             stuff[map[position.x][position.y+1]]++;
+            map[position.x][position.y+1]=0;
           }
-          map[position.x][position.y+1]=0;
         }
         i=0;
       }
@@ -253,15 +256,16 @@ int get_stuff(int code)
             {
               flag=1;
               stuff[item[stuff_node[i]].num]++;
+              map[position.x-1][position.y]=0;
             }
           }
-          if (flag==0)
+          if ((flag==0)&&(stuff_node[0]+1<=max_stuff_node))
           {
             stuff_node[0]++;
             stuff_node[stuff_node[0]]=map[position.x-1][position.y]-item[1].num+1;
             stuff[map[position.x-1][position.y]]++;
+            map[position.x-1][position.y]=0;
           }
-          map[position.x-1][position.y]=0;
         }
         i=0;
       }
@@ -282,15 +286,16 @@ int get_stuff(int code)
             {
               flag=1;
               stuff[item[stuff_node[i]].num]++;
+              map[position.x+1][position.y]=0;
             }
           }
-          if (flag==0)
+          if ((flag==0)&&(stuff_node[0]+1<=max_stuff_node))
           {
             stuff_node[0]++;
             stuff_node[stuff_node[0]]=map[position.x+1][position.y]-item[1].num+1;
             stuff[map[position.x+1][position.y]]++;
+            map[position.x+1][position.y]=0;
           }
-          map[position.x+1][position.y]=0;
         }
         i=0;
       }
