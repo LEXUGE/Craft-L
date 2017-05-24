@@ -31,8 +31,8 @@ struct item_info{
   char *symbol;
 };
 
-int item_n=2; //When you add new item,please change it
-struct item_info item[3];
+int item_n=3; //When you add new item,please change it
+struct item_info item[4];
 struct item_info grass;
 struct pos position;
 int stuff_now=0;
@@ -69,6 +69,7 @@ int right_touch(int x,int y);
 int liquid_dfs(int x,int y,int num,int r,int max_r);
 int check_x_y(int x,int y);
 int check_x_y2(int x,int y,int code);
+int pull(int p);
 
 int GetRandom()
 {
@@ -95,6 +96,17 @@ int GetRandom()
     }
   #endif
   return rnum;
+}
+
+int pull(int p)
+{
+  int i=0;
+  for (i=p;i<stuff_node[0];i++)
+  {
+    stuff_node[i]=stuff_node[i+1];
+  }
+  stuff_node[stuff_node[0]]=0;
+  return 0;
 }
 
 int check_x_y2(int x,int y,int code)
@@ -172,6 +184,7 @@ int right_touch(int x,int y)
     if (stuff[item[stuff_node[stuff_now]].num]==0)
     {
       stuff_node[stuff_now]=0;
+      pull(stuff_now);
       stuff_node[0]--;
       stuff_now=0;
     }
@@ -325,6 +338,16 @@ int item_init()
   item[2].liquid=1;
   item[2].cross=1;//can't
   item[2].get=0;//can
+
+  item[3].num=9;
+  item[3].chance=2000;
+  item[3].fluc=1000;
+  item[3].symbol="*";
+  item[3].front_color=COLOR_BLACK;
+  item[3].back_color=COLOR_WHITE;
+  item[3].liquid=0;
+  item[3].cross=0;
+  item[3].get=1;
   return 0;
 }
 
