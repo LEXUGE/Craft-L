@@ -28,6 +28,10 @@ struct item_info{
   int liquid;
   int cross;
   int get;
+  int use;
+  int depend[101];
+  int depend_r[101];
+  int max_depend;
   char *symbol;
 };
 
@@ -52,6 +56,7 @@ int max_stuff_vis=3;
 int max_r_fluc=10;
 int pos_old=0;
 
+//Client Part
 int display();
 int get_pro();
 int main_loop();
@@ -70,6 +75,13 @@ int liquid_dfs(int x,int y,int num,int r,int max_r);
 int check_x_y(int x,int y);
 int check_x_y2(int x,int y,int code);
 int pull(int p);
+int read_save();
+int write_save();
+
+//Server Part
+int check_depend(int depend_num,int depend_each_r,int x,int y);
+int server_landform(int num);
+//End
 
 int GetRandom()
 {
@@ -96,6 +108,153 @@ int GetRandom()
     }
   #endif
   return rnum;
+}
+
+//Sever Part
+int check_depend(int depend_num,int depend_each_r,int x,int y)
+{
+  int i=0,j=0;
+  for (i=x-depend_each_r;i<=x+depend_each_r;i++)
+    for (j=y-depend_each_r;j<=y+depend_each_r;j++)
+      if ((i>=min_height)&&(i<=max_height)&&(j>=min_width)&&(j<=max_width))
+        if (map[i][j]==depend_num) return 1;
+  return 0;
+}
+
+int server_landform(int num)
+{
+  int ran_x=0,ran_y=0,i=0,flag=0,j=0;
+  for (i=1;i<=item[num].chance+(abs(GetRandom())%item[num].fluc+1);i++)
+  {
+    while (1)
+    {
+    flag=0;
+    ran_x=abs(GetRandom())%max_height+1;
+    ran_y=abs(GetRandom())%max_width+1;
+    for (j=1;j<=item[num].max_depend;j++)
+    {
+      flag=check_depend(item[num].depend[j],item[num].depend_r[j],ran_x,ran_y);
+    }
+    if ((flag==1)&&(map[ran_x][ran_y]==0))
+    {
+      map[ran_x][ran_y]=item[num].num;
+      break;
+    }
+    }
+  }
+  return 0;
+}
+
+//Client Part
+int read_save()
+{
+  char path[100]={0};
+  FILE *fp;
+  int i=0,j=0,temp_width=0,temp_height=0,temp=0,num=0;
+  erase();
+  refresh();
+  printw("[OPEN] Please input the path to open the save:\n");
+  refresh();
+  echo();
+  scanw("%s",&path);
+  refresh();
+  noecho();
+
+  if ((fp=fopen(path,"r"))==NULL)
+  {
+    printw("[OPEN] Open save failed\n");
+    getch();
+    refresh();
+    return 1;
+  }
+  fscanf(fp,"%d %d\n",&temp_height,&temp_width);
+  if ((temp_height==max_height)&&(temp_width==max_width)) {max_height=temp_height;max_width=temp_width;}
+  else
+  {
+    printw("[OPEN] The map size is incorrect!\n");
+    getch();
+    refresh();
+    return 2;
+  }
+
+  fscanf(fp,"%d %d\n",&position.x,&position.y);
+  fscanf(fp,"%d",&stuff_node[0]);
+  if (stuff_node[0]>max_stuff_node) stuff_node[0]=max_stuff_node;
+  for (i=1;i<=stuff_node[0];i++)
+    fscanf(fp,"%d",&stuff_node[i]);
+  fscanf(fp,"\n");
+
+  for (i=1;i<=stuff_node[0];i++)
+  {
+    fscanf(fp,"%d %d",&temp,&num);
+    if (temp<=100) stuff[temp]=num;
+    fscanf(fp,"\n");
+  }
+  fscanf(fp,"\n");
+
+  for (i=min_height;i<=max_height;i++)
+  {
+    for (j=min_width;j<=max_width;j++)
+      fscanf(fp,"%d ",&map[i][j]);
+    fscanf(fp,"\n");
+  }
+  //get_row_col();
+  dstart_x=position.x;
+  dstart_y=position.y;
+  printw("[OPEN] Open save successful!\n");
+  refresh();
+  getch();
+  display();
+  return 0;
+}
+
+int write_save()
+{
+  char path[100]={0};
+  FILE *fp;
+  int i=0,j=0;
+  erase();
+  refresh();
+  printw("[SAVE] Please input the path to write the save:\n");
+  refresh();
+  echo();
+  scanw("%s",&path);
+  refresh();
+  noecho();
+
+  if ((fp=fopen(path,"w"))==NULL)
+  {
+    printw("[SAVE] Write save failed\n");
+    getch();
+    refresh();
+    return 1;
+  }
+  fprintf(fp,"%d %d\n",max_height,max_width);
+  fprintf(fp,"%d %d\n",position.x,position.y);
+  fprintf(fp,"%d ",stuff_node[0]);
+
+  for (i=1;i<=stuff_node[0];i++)
+    fprintf(fp,"%d ",stuff_node[i]);
+  fprintf(fp,"\n");
+
+  for (i=1;i<=stuff_node[0];i++)
+  {
+    fprintf(fp,"%d %d",item[stuff_node[i]].num,stuff[item[stuff_node[i]].num]);
+    fprintf(fp,"\n");
+  }
+
+  for (i=min_height;i<=max_height;i++)
+  {
+    for (j=min_width;j<=max_width;j++)
+      fprintf(fp,"%d ",map[i][j]);
+    fprintf(fp,"\n");
+  }
+  get_row_col();
+  printw("[SAVE] Write save successful!\n");
+  refresh();
+  getch();
+  display();
+  return 0;
 }
 
 int pull(int p)
@@ -319,6 +478,18 @@ int get_stuff(int code)
 
 int item_init()
 {
+
+  item[2].num=8;
+  item[2].chance=10;
+  item[2].fluc=3;
+  item[2].symbol="'";
+  item[2].front_color=COLOR_WHITE;
+  item[2].back_color=COLOR_BLUE;
+  item[2].liquid=1;
+  item[2].cross=1;//can't
+  item[2].get=0;//can
+  item[2].use=0;
+
   item[1].num=7;
   item[1].chance=6000;
   item[1].fluc=1000;
@@ -328,16 +499,10 @@ int item_init()
   item[1].liquid=0;
   item[1].cross=0;//can't
   item[1].get=1;//can
-
-  item[2].num=8;
-  item[2].chance=30;
-  item[2].fluc=3;
-  item[2].symbol="'";
-  item[2].front_color=COLOR_WHITE;
-  item[2].back_color=COLOR_BLUE;
-  item[2].liquid=1;
-  item[2].cross=1;//can't
-  item[2].get=0;//can
+  item[1].use=1;
+  item[1].max_depend=1;
+  item[1].depend[1]=item[2].num;
+  item[1].depend_r[1]=30;
 
   item[3].num=9;
   item[3].chance=2000;
@@ -348,6 +513,7 @@ int item_init()
   item[3].liquid=0;
   item[3].cross=0;
   item[3].get=1;
+  item[3].use=0;
   return 0;
 }
 
@@ -405,8 +571,15 @@ int get_row_col()
     dstart_x=position.x;
     dstart_y=position.y;
   }*/
+  if ((row!=info.ws_row)||(col!=info.ws_col))
+  {
+    dstart_x=position.x;
+    dstart_y=position.y;
+  }
   row=info.ws_row;
   col=info.ws_col;
+  if (dstart_x+row-2>max_height) dstart_x=max_height-row+2;
+  if (dstart_y+col-2>max_width) dstart_y=max_width-col+2;
   return 0;
 }
 
@@ -435,7 +608,7 @@ int display()
   init_pair(1,COLOR_BLACK,COLOR_WHITE);
   attron(COLOR_PAIR(1));
 
-  printw("X:%d Y:%d row:%d col:%d",position.x,position.y,row,col);refresh();
+  printw("X:%d Y:%d row:%d col:%d %d %d",position.x,position.y,row,col,dstart_x,dstart_y);refresh();
   if (stuff_now>0)
     printw(" N:%s",item[stuff_node[stuff_now]].symbol);
   else printw(" N:Hand");
@@ -559,6 +732,10 @@ int get_pro()
   if ((ch=='8')&&(stuff_node[0]>=8)&&(8<=max_stuff_vis)) stuff_now=8;
   if ((ch=='9')&&(stuff_node[0]>=9)&&(9<=max_stuff_vis)) stuff_now=9;
 
+  //Open and Save the saves
+  if (ch==15) read_save();
+  if (ch==6) write_save();
+
   if (ch==27) return 1;
   return 0;
 }
@@ -621,7 +798,11 @@ int init_digital()
 
   map[position.x][position.y]=1;
   for (i=1;i<=item_n;i++)
-    random_stuff(item[i].num,item[i].chance,item[i].fluc,item[i].liquid);
+    if (item[i].use==0)
+      random_stuff(item[i].num,item[i].chance,item[i].fluc,item[i].liquid);
+  for (i=1;i<=item_n;i++)
+    if (item[i].use==1)
+      server_landform(i);
   return 0;
 }
 
