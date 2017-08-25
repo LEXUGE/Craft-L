@@ -35,6 +35,6 @@ The informations from the status area:  
 - ```S(number)```：英文物品（stuff）的首字母。意味你所携带的物品。  
 ```S(number)``` : The first letter of 'stuff'.Means all the stuffs you have got now.  
 
-#License
-This project is using GPL-3.0+
-本项目使用GPL-3.0或更高版本协议。
+# License
+This project is using GPL-3.0+  
+本项目使用GPL-3.0或更高版本协议。  
